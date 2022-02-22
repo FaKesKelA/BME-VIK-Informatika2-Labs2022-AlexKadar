@@ -26,6 +26,17 @@ int main(int argc, char* argv[])
 
 	//socket létrehozása 
     SOCKET sock = socket(PF_INET, SOCK_STREAM, 0);
+    if(sock < 0){
+        printf("socket: %d", WSAGetLastError());
+        return 1;
+    }
+
+    // szerver címe
+
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = inet_addr(argv[1]);
+    
 	
 	WSACleanup();
 
