@@ -70,6 +70,20 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    FILE *f = fopen(argv[4], "w");
+    if(f==NULL){
+        printf("fopen");
+        return 1;
+    }
+
+    fwrite(pdata + 4, 1, reclen - (pdata-rec) - 4, f);
+
+    while((reclen = recv(sock, rec, sizeof(rec), 0)) > 0){
+        fwrite(rec, 1, reclen, f);
+    }
+
+    fclose(f);
+
     closesocket(sock); 
 	
 	WSACleanup();
