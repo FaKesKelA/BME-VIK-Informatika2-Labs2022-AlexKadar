@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "winsock2.h"
+#include <winsock2.h>
 #pragma comment(lib, "WS2_32.lib") //Properties/Linker/ws2_32.lib
-//cringe csak windows-on megy a winsock2, itt csak gépelek
-
+//cringe, csak windows-on megy a winsock2, itt csak gépelek
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +35,15 @@ int main(int argc, char* argv[])
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr(argv[1]);
-    
+    addr.sin_port = htons(atoi(argv[2]));
+
+    // kapcsolódás
+    if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
+        printf("connect: %d", WSAGetLastError());
+        return 1;
+    }
+
+    closesocket(sock); 
 	
 	WSACleanup();
 
