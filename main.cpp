@@ -3,19 +3,20 @@
 #include <stdio.h>
 #include <string.h>
 #include "winsock2.h"
-#pragma comment(lib, "WS2_32.lib")
+#pragma comment(lib, "WS2_32.lib") //Properties/Linker/ws2_32.lib
+//cringe csak windows-on megy a winsock2, itt csak gépelek
 
 
 int main(int argc, char* argv[])
 {
-	// EllenırzÈs
+	// Ellenőrzés
 	if(argc < 5)
 	{
-		printf("Haszn·lat: %s IP port oldal f·jl\n", argv[0]);
+		printf("Használat: %s IP port oldal f·jl\n", argv[0]);
 		return 1;
 	}
 
-	// Winsock inicializ·l·s
+	// Winsock inicializálása
 	WSADATA	wsd;
 	if(WSAStartup(0x0202, &wsd) != 0)
 	{
@@ -23,7 +24,8 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// TODO
+	//socket létrehozása 
+    SOCKET sock = socket(PF_INET, SOCK_STREAM, 0);
 	
 	WSACleanup();
 
