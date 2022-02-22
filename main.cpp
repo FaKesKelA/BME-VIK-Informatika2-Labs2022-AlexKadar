@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 	// Ellenőrzés
 	if(argc < 5)
 	{
-		printf("Használat: %s IP port oldal f·jl\n", argv[0]);
+		printf("Használat: %s IP port oldal fájl\n", argv[0]);
 		return 1;
 	}
 
@@ -40,6 +40,32 @@ int main(int argc, char* argv[])
     // kapcsolódás
     if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
         printf("connect: %d", WSAGetLastError());
+        return 1;
+    }
+
+    char req[256];
+    int reqlen;
+    reqlen = sprintf(req, "GET %s HTTP/1.0/r/n/r/n", argv[3]);
+
+    send(sock, req, reqlen, 0);
+
+    char rec[1024];
+    int reclen = recv(sock, rec, sizeof(rec)-1, MSG_WAITALL);
+    if(reclen < 0){
+        printf("recv: %d", WSAGetLastError());
+        return 1;
+    }
+
+    char version[16];
+    int status;
+    char error[256];
+    if(sscanf(rec, "HTTP/%16s %d %256[^/r/n]/r/n", version, status, error) == 3){
+        printf("szerver státusza: %d %s/r/n", status, error);
+    }
+
+    char* pdata;
+    if((pdata = strstr(rec, "/r/n/r/n")) == NULL){
+        printf("Hiba a szétválasztásnál!");
         return 1;
     }
 
