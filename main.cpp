@@ -1,10 +1,11 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS //mac-en nem szükséges
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <winsock2.h>
 #pragma comment(lib, "WS2_32.lib") //Properties/Linker/ws2_32.lib
-//cringe, csak windows-on megy a winsock2, itt csak gépelek
+//csak windows-on megy a winsock2, itt csak gépelek
 
 int main(int argc, char* argv[])
 {
@@ -57,7 +58,7 @@ int main(int argc, char* argv[])
     }
 
     char version[16];
-    int status;
+    int status = 0;
     char error[256];
     if(sscanf(rec, "HTTP/%16s %d %256[^/r/n]/r/n", version, status, error) == 3){
         printf("szerver státusza: %d %s/r/n", status, error);
