@@ -5,7 +5,6 @@
 #include <string.h>
 #include <winsock2.h>
 #pragma comment(lib, "WS2_32.lib") //Properties/Linker/ws2_32.lib
-//csak windows-on megy a winsock2, itt csak gépelek
 
 int main(int argc, char* argv[])
 {
@@ -27,7 +26,7 @@ int main(int argc, char* argv[])
 	//socket létrehozása 
     SOCKET sock = socket(PF_INET, SOCK_STREAM, 0);
     if(sock < 0){
-        printf("socket: %d", WSAGetLastError());
+        printf("socket: %d\r\n", WSAGetLastError());
         return 1;
     }
 
@@ -40,32 +39,32 @@ int main(int argc, char* argv[])
 
     // kapcsolódás
     if(connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
-        printf("connect: %d", WSAGetLastError());
+        printf("connect: %d\r\n", WSAGetLastError());
         return 1;
     }
 
     char req[256];
     int reqlen;
-    reqlen = sprintf(req, "GET %s HTTP/1.0/r/n/r/n", argv[3]);
+    reqlen = sprintf(req, "GET %s HTTP/1.0\r\n\r\n", argv[3]);
 
     send(sock, req, reqlen, 0);
 
     char rec[1024];
     int reclen = recv(sock, rec, sizeof(rec)-1, MSG_WAITALL);
     if(reclen < 0){
-        printf("recv: %d", WSAGetLastError());
+        printf("recv: %d\r\n", WSAGetLastError());
         return 1;
     }
 
     char version[16];
     int status = 0;
     char error[256];
-    if(sscanf(rec, "HTTP/%16s %d %256[^/r/n]/r/n", version, status, error) == 3){
-        printf("szerver státusza: %d %s/r/n", status, error);
+    if(sscanf(rec, "HTTP/%16s %d %256[^\r\n]\r\n", version, status, error) == 3){
+        printf("szerver státusza: %d %s\r\n", status, error);
     }
 
     char* pdata;
-    if((pdata = strstr(rec, "/r/n/r/n")) == NULL){
+    if((pdata = strstr(rec, "\r\n\r\n")) == NULL){
         printf("Hiba a szétválasztásnál!");
         return 1;
     }
