@@ -1,0 +1,109 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `mydb` ;
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`hallgato`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`hallgato` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`hallgato` (
+  `idhallgato` INT NOT NULL,
+  `nev` VARCHAR(45) NULL,
+  `cim` VARCHAR(45) NULL,
+  `telefonszam` VARCHAR(45) NULL,
+  `szuletesi datum` DATETIME NULL,
+  PRIMARY KEY (`idhallgato`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`oktato`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`oktato` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`oktato` (
+  `idoktato` INT NOT NULL,
+  `nev` VARCHAR(45) NULL,
+  `tanszek` VARCHAR(45) NULL,
+  PRIMARY KEY (`idoktato`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`tantargy`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`tantargy` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`tantargy` (
+  `idtantargy` INT NOT NULL,
+  `nev` VARCHAR(45) NULL,
+  `leiras` VARCHAR(45) NULL,
+  PRIMARY KEY (`idtantargy`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`hallgat`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`hallgat` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`hallgat` (
+  `hallgato_idhallgato` INT NOT NULL,
+  `tantargy_idtantargy` INT NOT NULL,
+  PRIMARY KEY (`hallgato_idhallgato`, `tantargy_idtantargy`),
+  INDEX `fk_hallgato_has_tantargy_tantargy1_idx` (`tantargy_idtantargy` ASC) VISIBLE,
+  INDEX `fk_hallgato_has_tantargy_hallgato_idx` (`hallgato_idhallgato` ASC) VISIBLE,
+  CONSTRAINT `fk_hallgato_has_tantargy_hallgato`
+    FOREIGN KEY (`hallgato_idhallgato`)
+    REFERENCES `mydb`.`hallgato` (`idhallgato`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_hallgato_has_tantargy_tantargy1`
+    FOREIGN KEY (`tantargy_idtantargy`)
+    REFERENCES `mydb`.`tantargy` (`idtantargy`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`oktat`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`oktat` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`oktat` (
+  `tantargy_idtantargy` INT NOT NULL,
+  `oktato_idoktato` INT NOT NULL,
+  PRIMARY KEY (`tantargy_idtantargy`, `oktato_idoktato`),
+  INDEX `fk_tantargy_has_oktato_oktato1_idx` (`oktato_idoktato` ASC) VISIBLE,
+  INDEX `fk_tantargy_has_oktato_tantargy1_idx` (`tantargy_idtantargy` ASC) VISIBLE,
+  CONSTRAINT `fk_tantargy_has_oktato_tantargy1`
+    FOREIGN KEY (`tantargy_idtantargy`)
+    REFERENCES `mydb`.`tantargy` (`idtantargy`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tantargy_has_oktato_oktato1`
+    FOREIGN KEY (`oktato_idoktato`)
+    REFERENCES `mydb`.`oktato` (`idoktato`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
